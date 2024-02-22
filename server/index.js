@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import clientRoutes from "./routes/client.js";
+import products from "./data/products.js";
 
 /* CONFIGURATION */
 dotenv.config();
@@ -21,11 +22,28 @@ app.use(cors());
 /* ROUTES */
 app.use("/client", clientRoutes);
 
-/* MONGOOSE SETUP */
-const PORT = process.env.PORT || 9000;
-mongoose
-  .connect(process.env.MONGO_URL, {})
-  .then(() => {
-    app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
-  })
-  .catch((error) => console.log(`${error} did not connect`));
+// /* MONGOOSE SETUP */
+// const PORT = process.env.PORT || 9000;
+// mongoose
+//   .connect(process.env.MONGO_URL, {})
+//   .then(() => {
+//     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+//   })
+//   .catch((error) => console.log(`${error} did not connect`));
+
+app.get("/", (req, res) => {
+  res.send("connected to api");
+});
+
+app.get("/api/products", (req, res) => {
+  res.json(products);
+});
+
+app.get("/api/products/:id", (req, res) => {
+  const product = products.find((item) => item._id === req.params.id);
+  res.json(product);
+});
+
+app.listen(3000, () => {
+  console.log("connected to port 3000");
+});
